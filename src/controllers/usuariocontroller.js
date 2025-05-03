@@ -12,60 +12,6 @@ const jwt = require('jsonwebtoken');
 //  eliminar un usuario
 
 
-// const login = async (req, res) => {
-//     const { email, password } = req.body;
-
-//     if (!email || !password) {
-//         return res.status(400).json({ message: 'Email y contraseña son obligatorios.' });
-//     }
-
-//     try {
-//         const pool = await poolpromise();
-//         const result = await pool.request()
-//             .input('email', sql.VarChar, email)
-//             .query('SELECT * FROM usuarios WHERE email = @email');
-
-//         const user = result.recordset[0];
-
-//         if (!user) {
-//             return res.status(404).json({ message: 'Usuario no encontrado.' });
-//         }
-
-//         // Comparamos la contraseña en texto plano con el hash de la BD
-//         const isMatch = await bcrypt.compare(password, user.password);
-
-//         if (!isMatch) {
-//             return res.status(401).json({ message: 'Contraseña incorrecta.' });
-//         }
-
-//         // Creamos el token JWT
-//         const token = jwt.sign(
-//             {
-//                 id_usuario: user.id_usuario,
-//                 email: user.email,
-//                 rol: user.id_rol,
-//             },
-//              process.env.BD_JWT, // Cambia esto por una variable de entorno real en producción
-//             { expiresIn: '1h' }
-//         );
-
-//         res.status(200).json({
-//             message: 'Login exitoso.',
-//             token,
-//             usuario: {
-//                 id: user.id_usuario,
-//                 nombre: user.nombre,
-//                 apellido: user.apellido,
-//                 email: user.email,
-//                 rol: user.id_rol
-//             }
-//         });
-
-//     } catch (error) {
-//         console.error('Error al hacer login:', error);
-//         res.status(500).json({ message: 'Error en el servidor.' });
-//     }
-// };
 
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -102,18 +48,18 @@ const login = async (req, res) => {
 
         const rol = rolResult.recordset[0];
 
-        // Creamos el token JWT
+        //  token JWT
         const token = jwt.sign(
             {
                 id_usuario: user.id_usuario,
                 email: user.email,
-                rol: rol ? rol.nombre : 'Desconocido', // Añadimos el nombre del rol
+                rol: rol ? rol.nombre : 'Desconocido', 
             },
-            process.env.BD_JWT, // Cambia esto por una variable de entorno real en producción
+            process.env.BD_JWT, 
             { expiresIn: '1h' }
         );
 
-        // Respondemos con los datos del usuario, incluyendo el rol
+        
         res.status(200).json({
             message: 'Login exitoso.',
             token,
@@ -122,7 +68,7 @@ const login = async (req, res) => {
                 nombre: user.nombre,
                 apellido: user.apellido,
                 email: user.email,
-                rol: rol ? rol.nombre : 'Desconocido' // Incluimos el nombre del rol
+                rol: rol ? rol.nombre : 'Desconocido' 
             }
         });
 
@@ -157,7 +103,6 @@ if (result.recordset.length > 0) {
     .input('apellido', sql.VarChar, apellido)
     .input('email', sql.VarChar, email)
     .input('password', sql.VarChar, hashedPassword)
-    // .input('password', sql.VarChar, password)
     .input('id_rol', sql.Int, id_rol)
     .query('INSERT INTO usuarios (nombre,apellido,email,password,id_rol) VALUES (@nombre,@apellido,@email,@password,@id_rol)');
     res.status(201).json({message:'Usuario created successfully'});

@@ -80,7 +80,7 @@ try {
     .query('DELETE FROM pacientes where id_paciente = @id_paciente')
     res.status(201).json({message:'paciente eliminado'})
 } catch (error) {
-    clg(error)
+    console.error(error);
     res.status(500).json({message:'error al eliminar el paciente',error:error.message})
 }
 
